@@ -1,13 +1,12 @@
-var http = require('http');
-http.createServer(function (req, res) {
-  res.writeHead(
-    200,
-    {
-      'Content-Type': 'text/plain'
-    }
-  );
+const express = require('express');
+const app = express();
 
-  res.end('Hello World\n');
-  
-}).listen(3333);
-console.log('Server running on port 3333.');
+app.get(
+  '/',
+  (req, res) => res.send('Hello World!')
+);
+
+app.listen(
+  3333,
+  () => console.log('Example app listening on port 3333!')
+);
