@@ -1,0 +1,14 @@
+{
+  "name": "magic-api-server",
+  "version": "0.0.1",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "nodemon": "1.11.0"
+  },
+  "scripts": {
+    "debug": "DEBUG=http nodemon src/app.js",
+    "start": "node src/app.js"
+  }
+}

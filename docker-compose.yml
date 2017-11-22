@@ -1,0 +1,6 @@
+server:
+  build: ./server
+  ports:
+    - 80:3333
+  volumes:
+    - ./server/application/src:/application/src
