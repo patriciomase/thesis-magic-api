@@ -1,3 +1,13 @@
+aerospike:
+  build: ./aerospike
+  ports:
+    - 3000:3000
+    - 3001:3001
+    - 3002:3002
+    - 3003:3003 
+  volumes:
+  - ./volumes/aerospike/data:/opt/aerospike/data
+
 server:
   build: ./server
   ports:
