@@ -16,7 +16,13 @@ app.get(
 app.get(
   '/endpoints/:name',
   (req, res) => {
-    Endpoints.save('endpoints', { name: req.params.name });
+    Endpoints.save(
+      req.params.name, {
+        name: req.params.name,
+        uri: '/' + req.params.name
+      },
+      'endpoints'
+    );
     res.send('Saved! (I think)');
   }
 );
