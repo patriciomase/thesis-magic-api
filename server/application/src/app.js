@@ -15,15 +15,15 @@ app.get(
 
 app.get(
   '/endpoints/:name',
-  (req, res) => {
-    Endpoints.save(
+  async (req, res) => {
+    const result = await Endpoints.save(
       req.params.name, {
         name: req.params.name,
         uri: '/' + req.params.name
       },
       'endpoints'
     );
-    res.send('Saved! (I think)');
+    res.send(result);
   }
 );
 
