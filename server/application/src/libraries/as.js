@@ -7,7 +7,7 @@ const Key = Aerospike.Key;
 /* client initialization */
 const client = Aerospike.client({
   hosts: [
-    { addr: 'as_server', port: 3000 }
+    { addr: 'aerospike1', port: 3000 }
   ]
 });
 

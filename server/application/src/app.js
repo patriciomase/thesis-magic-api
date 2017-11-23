@@ -1,9 +1,24 @@
+'use strict'
 const express = require('express');
 const app = express();
 
+// Libraries.
+const Endpoints = require('./libraries/endpoints');
+
 app.get(
   '/',
-  (req, res) => res.send('Hello World!')
+  (req, res) => {
+    console.log('params', req.params);
+    res.send('Hello World!')
+  }
+);
+
+app.get(
+  '/endpoints/:name',
+  (req, res) => {
+    Endpoints.save('endpoints', { name: req.params.name });
+    res.send('Saved! (I think)');
+  }
 );
 
 app.listen(
