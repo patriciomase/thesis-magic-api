@@ -14,6 +14,15 @@ app.get(
 );
 
 app.get(
+  '/endpoints',
+  async (req, res) => {
+    console.log('getting /endpoints');
+    const result = await Endpoints.get();
+    res.send(result);
+  }
+);
+
+app.post(
   '/endpoints/:name',
   async (req, res) => {
     const result = await Endpoints.save(

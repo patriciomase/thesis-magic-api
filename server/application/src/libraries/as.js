@@ -14,9 +14,8 @@ const client = Aerospike.client({
 /**
  * Try to connect to a cluster
  */
-function connect() {
-  /* conecting to the cluster */
-  client.connect(function (error) {
+(() => {
+  client.connect((error) => {
     if (error) {
       // handle failure
       console.log(`Connection to Aerospike cluster failed: ${error}`)
@@ -25,12 +24,9 @@ function connect() {
       console.log('Connection to Aerospike cluster succeeded!')
     }
   });
-}
+})()
 
-exports.put = (id, record, bucket = 'main') => {
-  if (!client.isConnected()) {
-    connect();
-  }
+exports.put = async (id, record, bucket = 'main') => {
 
   return new Promise((resolve, reject) => {
 
@@ -48,10 +44,6 @@ exports.put = (id, record, bucket = 'main') => {
 };
 
 exports.get = (id, bucket = 'main') => {
-
-  if (!client.isConnected()) {
-    connect();
-  }
 
   return new Promise((resolve, reject) => {
 
@@ -71,16 +63,37 @@ exports.get = (id, bucket = 'main') => {
       }
     });
   });
-};
+}
+
+// Get all records in a bucket.
+exports.getAll = async (bucketName) => {
+  return new Promise((resolve, reject) => {
+    var scan = client.scan('test', bucketName)
+    scan.priority = Aerospike.scanPriority.LOW
+  
+    const stream = scan.foreach()
+    let results = [];
+    stream.on('error', (error) => { 
+      // throw error
+      console.log('error scanning', error);
+    });
+  
+    stream.on('data', (record) => {
+      console.log('scanning');
+      console.log(record);
+      results.push(record.bins);
+    })
+    stream.on('end', () => {
+        resolve(results);
+      }
+    );
+  });
+}
 
 /**
  * Read multiple records
  */
-exports.getMulti = (idsArray) => {
-
-  if (!client.isConnected()) {
-    connect();
-  }
+exports.getMulti = async (idsArray) => {
 
   return new Promise((resolve, reject) => {
 
