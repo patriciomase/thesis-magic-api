@@ -2,6 +2,10 @@
 const express = require('express');
 const app = express();
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Libraries.
 const Endpoints = require('./libraries/endpoints');
 
@@ -23,12 +27,12 @@ app.get(
 );
 
 app.post(
-  '/endpoints/:name',
+  '/endpoints/:uri',
   async (req, res) => {
     const result = await Endpoints.save(
-      req.params.name, {
-        name: req.params.name,
-        uri: '/' + req.params.name
+      req.params.uri, {
+        name: req.body.name,
+        description: req.body.description
       },
       'endpoints'
     );

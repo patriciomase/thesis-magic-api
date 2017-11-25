@@ -68,8 +68,9 @@ exports.get = (id, bucket = 'main') => {
 // Get all records in a bucket.
 exports.getAll = async (bucketName) => {
   return new Promise((resolve, reject) => {
-    var scan = client.scan('test', bucketName)
-    scan.priority = Aerospike.scanPriority.LOW
+    var scan = client.scan('test', bucketName);
+    scan.priority = Aerospike.scanPriority.LOW;
+    // scan.select('uri');
   
     const stream = scan.foreach()
     let results = [];
@@ -79,14 +80,11 @@ exports.getAll = async (bucketName) => {
     });
   
     stream.on('data', (record) => {
-      console.log('scanning');
-      console.log(record);
       results.push(record.bins);
     })
     stream.on('end', () => {
-        resolve(results);
-      }
-    );
+      resolve(results);
+    });
   });
 }
 

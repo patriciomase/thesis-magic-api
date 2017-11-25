@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "aerospike": "^3.0.2",
+    "body-parser": "^1.18.2",
     "express": "^4.16.2"
   },
   "devDependencies": {
