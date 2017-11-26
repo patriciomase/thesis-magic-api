@@ -26,23 +26,6 @@ const client = Aerospike.client({
   });
 })()
 
-exports.put = async (id, record, bucket = 'main') => {
-
-  return new Promise((resolve, reject) => {
-
-    const key = new Key('test', bucket, id);
-
-    client.put(key, record, (error) => {
-
-      if (error) {
-        reject(error.message);
-      } else {
-        resolve(id);
-      }
-    });
-  });
-};
-
 exports.get = (id, bucket = 'main') => {
 
   return new Promise((resolve, reject) => {
@@ -59,7 +42,7 @@ exports.get = (id, bucket = 'main') => {
           reject(error);
         }
       } else {
-        resolve(record);
+        resolve(record.bins);
       }
     });
   });
@@ -129,3 +112,16 @@ exports.getMulti = async (idsArray) => {
     });
   });
 }
+
+exports.put = async (id, record, bucket = 'main') => {
+  return new Promise((resolve, reject) => {
+    const key = new Key('test', bucket, id);
+    client.put(key, record, (error) => {
+      if (error) {
+        reject(error.message);
+      } else {
+        resolve(id);
+      }
+    });
+  });
+};

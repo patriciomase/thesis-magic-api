@@ -17,10 +17,17 @@ app.get(
   }
 );
 
+app.delete(
+  '/endpoints/:uri',
+  async (req, res) => {
+    const result = await Endpoints.softDelete(req.params.uri);
+    res.send(result);
+  }
+)
+
 app.get(
   '/endpoints',
   async (req, res) => {
-    console.log('getting /endpoints');
     const result = await Endpoints.get();
     res.send(result);
   }
@@ -33,8 +40,7 @@ app.post(
       req.params.uri, {
         name: req.body.name,
         description: req.body.description
-      },
-      'endpoints'
+      }
     );
     res.send(result);
   }

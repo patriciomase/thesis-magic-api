@@ -1,5 +1,6 @@
 'use strict';
 
+const entityType = 'endpoint';
 // Libraries.
 const as = require('./as');
 
@@ -12,7 +13,7 @@ class Endpoint {
       updated: d.getTime(),
 
       description: 'Some basic endpoint information.',
-      entityType: 'endpoint',
+      entityType: entityType,
       fields: [],
       name: '',
       uri: ''
@@ -49,8 +50,7 @@ class Endpoint {
 }
 
 exports.get = async () => {
-  console.log('awaiting getAll');
-  const response = await as.getAll('main');
+  const response = await as.getAll(entityType);
   return response;
 }
 
@@ -63,6 +63,23 @@ exports.save = async (uri, data) => {
   newEndpoint.setName(data.name);
   newEndpoint.setUri(uri);
 
-  const response = await as.put(uri, newEndpoint.forSaving());
+  const response = await as.put(
+    uri,
+    newEndpoint.forSaving(),
+    entityType
+  );
+  return response;
+}
+
+exports.softDelete = async (uri) => {
+  let endpointData = await as.get(uri, entityType);
+  // @TODO validate if endpoint exists.
+  const d = new Date();
+  endpointData.deleted = d.getTime();
+  const response = await as.put(
+    uri,
+    endpointData,
+    entityType
+  );
   return response;
 }
