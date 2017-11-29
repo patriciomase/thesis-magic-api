@@ -14,42 +14,51 @@ const client = Aerospike.client({
 /**
  * Try to connect to a cluster
  */
-(() => {
-  client.connect((error) => {
-    if (error) {
-      // handle failure
-      console.log(`Connection to Aerospike cluster failed: ${error}`)
-    } else {
-      // handle success
-      console.log('Connection to Aerospike cluster succeeded!')
-    }
-  });
-})()
-
-exports.get = (id, bucket = 'main') => {
-
+const connect = () => {
   return new Promise((resolve, reject) => {
 
-    const key = new Key('test', bucket, id);
-
-    client.get(key, (error, record, meta) => {
+    client.connect((error) => {
       if (error) {
-        // Check if record not found probably user is loggin in by first time.
-        if (error.message === 'AEROSPIKE_ERR_RECORD_NOT_FOUND') {
-          resolve(null);
-        } else {
-          console.log('error getting record', error);
-          reject(error);
-        }
+        // handle failure
+        console.log(`Connection to Aerospike cluster failed: ${error}`);
+        reject(error);
       } else {
-        resolve(record.bins);
+        // handle success
+        console.log('Connection to Aerospike cluster succeeded!')
+        resolve();
       }
     });
   });
 }
 
+exports.get = async (id, bucket = 'main') => {
+  if (!client.isConnected()) {
+    await connect();
+  }
+
+  const key = new Key('test', bucket, id);
+  let bins = null;
+  await client.get(key, (error, record, meta) => {
+    if (error) {
+      // Check if record not found probably user is loggin in by first time.
+      if (error.message === 'AEROSPIKE_ERR_RECORD_NOT_FOUND') {
+        console.log('Record not found');
+      } else {
+        console.log('error getting record', error);
+      }
+    } else {
+      bins = record.bins;
+    }
+  });
+  return bins;
+}
+
 // Get all records in a bucket.
 exports.getAll = async (bucketName) => {
+  if (!client.isConnected()) {
+    await connect();
+  }
+
   return new Promise((resolve, reject) => {
     var scan = client.scan('test', bucketName);
     scan.priority = Aerospike.scanPriority.LOW;
@@ -114,6 +123,10 @@ exports.getMulti = async (idsArray) => {
 }
 
 exports.put = async (id, record, bucket = 'main') => {
+  if (!client.isConnected()) {
+    await connect();
+  }
+
   return new Promise((resolve, reject) => {
     const key = new Key('test', bucket, id);
     client.put(key, record, (error) => {
