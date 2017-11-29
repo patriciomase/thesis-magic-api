@@ -8,12 +8,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Libraries.
 const Endpoints = require('./libraries/endpoints');
+const Responses = require('./libraries/responses');
 
 app.get(
   '/',
   (req, res) => {
     console.log('params', req.params);
-    res.send('Hello World!')
+    res.json(
+      Responses.data(
+        'Hello World!'
+      )
+    );
   }
 );
 
@@ -21,7 +26,9 @@ app.delete(
   '/endpoints/:uri',
   async (req, res) => {
     const result = await Endpoints.softDelete(req.params.uri);
-    res.send(result);
+    res.json(
+      Responses.data(result)
+    );
   }
 )
 
@@ -29,7 +36,9 @@ app.get(
   '/endpoints',
   async (req, res) => {
     const result = await Endpoints.get();
-    res.send(result);
+    res.json(
+      Responses.data(result)
+    );
   }
 );
 
@@ -42,7 +51,9 @@ app.post(
         description: req.body.description
       }
     );
-    res.send(result);
+    res.json(
+      Responses.data(result)
+    );
   }
 );
 
